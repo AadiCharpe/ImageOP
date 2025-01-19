@@ -84,6 +84,12 @@ class ImageOPFrame extends JFrame {
             label.setIcon(new ImageIcon(image));
         });
 
+        editMenu.add("Darken").addActionListener(e -> {
+            RescaleOp op = new RescaleOp(0.75f, -20.0f, null);
+            image = op.filter(image, null);
+            label.setIcon(new ImageIcon(image));
+        });
+
         editMenu.add("Edge Detection").addActionListener(e -> {
             float[] kernel = {0f, -1f, 0f, -1f, 4f, -1f, 0f, -1f, 0f};
             ConvolveOp op = new ConvolveOp(new Kernel(3, 3, kernel));
