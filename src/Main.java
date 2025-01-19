@@ -5,11 +5,14 @@ import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.imageio.ImageIO;
 
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.Kernel;
 import java.io.File;
 
@@ -83,6 +86,14 @@ class ImageOPFrame extends JFrame {
         editMenu.add("Edge Detection").addActionListener(e -> {
             float[] kernel = {0f, -1f, 0f, -1f, 4f, -1f, 0f, -1f, 0f};
             ConvolveOp op = new ConvolveOp(new Kernel(3, 3, kernel));
+            image = op.filter(image, null);
+            label.setIcon(new ImageIcon(image));
+        });
+
+        editMenu.add("Rotate").addActionListener(e -> {
+            int angle = Integer.parseInt(JOptionPane.showInputDialog("Enter angle:"));
+            AffineTransform transform = AffineTransform.getRotateInstance(Math.toRadians(angle), image.getWidth() / 2, image.getHeight() / 2);
+            AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
             image = op.filter(image, null);
             label.setIcon(new ImageIcon(image));
         });
