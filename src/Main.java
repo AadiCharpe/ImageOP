@@ -9,7 +9,8 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.imageio.ImageIO;
 
-import java.awt.*;
+import java.awt.Image;
+import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
@@ -78,6 +79,14 @@ class ImageOPFrame extends JFrame {
             label.setIcon(new ImageIcon(image));
         });
 
+        editMenu.add("Edge Detection").addActionListener(e -> {
+            float[] kernel = {0f, -1f, 0f, -1f, 4f, -1f, 0f, -1f, 0f};
+            ConvolveOp op = new ConvolveOp(new Kernel(3, 3, kernel));
+            image = op.filter(image, null);
+            label.setIcon(new ImageIcon(image));
+        });
+        editMenu.addSeparator();
+
         editMenu.add("Brighten").addActionListener(e -> {
             RescaleOp op = new RescaleOp(1.5f, -20.0f, null);
             image = op.filter(image, null);
@@ -89,19 +98,23 @@ class ImageOPFrame extends JFrame {
             image = op.filter(image, null);
             label.setIcon(new ImageIcon(image));
         });
-
-        editMenu.add("Edge Detection").addActionListener(e -> {
-            float[] kernel = {0f, -1f, 0f, -1f, 4f, -1f, 0f, -1f, 0f};
-            ConvolveOp op = new ConvolveOp(new Kernel(3, 3, kernel));
-            image = op.filter(image, null);
-            label.setIcon(new ImageIcon(image));
-        });
+        editMenu.addSeparator();
 
         editMenu.add("Rotate").addActionListener(e -> {
             int angle = Integer.parseInt(JOptionPane.showInputDialog("Enter angle:"));
             AffineTransform transform = AffineTransform.getRotateInstance(Math.toRadians(angle), image.getWidth() / 2, image.getHeight() / 2);
             AffineTransformOp op = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
             image = op.filter(image, null);
+            label.setIcon(new ImageIcon(image));
+        });
+
+        editMenu.add("Rescale").addActionListener(e -> {
+            double scaleFactor = Double.parseDouble(JOptionPane.showInputDialog("Enter Scale Factor"));
+            Image i = image.getScaledInstance((int) (image.getWidth() * scaleFactor), (int) (image.getHeight() * scaleFactor), BufferedImage.SCALE_SMOOTH);
+            image = new BufferedImage(i.getWidth(null), i.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+            Graphics2D bGr = image.createGraphics();
+            bGr.drawImage(i, 0, 0, null);
+            bGr.dispose();
             label.setIcon(new ImageIcon(image));
         });
         menuBar.add(editMenu);
