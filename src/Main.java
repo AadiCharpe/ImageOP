@@ -9,10 +9,12 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.imageio.ImageIO;
 
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.AffineTransformOp;
+import java.awt.image.RescaleOp;
 import java.awt.image.Kernel;
 import java.io.File;
 
@@ -77,8 +79,7 @@ class ImageOPFrame extends JFrame {
         });
 
         editMenu.add("Brighten").addActionListener(e -> {
-            float[] kernel = {0f, -1f, 0f, -1f, 8f, -1f, 0f, -1f, 0f};
-            ConvolveOp op = new ConvolveOp(new Kernel(3, 3, kernel));
+            RescaleOp op = new RescaleOp(1.5f, -20.0f, null);
             image = op.filter(image, null);
             label.setIcon(new ImageIcon(image));
         });
